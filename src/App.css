@@ -13,6 +13,7 @@ body {
 
 .App {
   text-align: center;
+  padding-top: 80px; /* Adjust for fixed navbar */
 }
 
 /* Header */
@@ -20,6 +21,11 @@ header {
   background-color: #3949ab;
   padding: 20px;
   color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
@@ -49,7 +55,6 @@ nav ul li button {
   background: linear-gradient(to right, #42a5f5, #478ed1);
   color: white;
   text-align: center;
-  
 }
 
 .landing h1 {
@@ -65,23 +70,21 @@ nav ul li button {
 }
 
 /* Search Bar */
-
-  .search-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-
-.search-bar select {
+.search-bar select, .search-bar input {
   padding: 12px;
   border-radius: 5px;
   border: 2px solid #1e88e5;
@@ -91,12 +94,6 @@ nav ul li button {
 }
 
 .search-bar input {
-  padding: 12px;
-  border-radius: 5px;
-  border: 2px solid #1e88e5;
-  font-size: 1rem;
-  background-color: #f0f8ff;
-  color: #333;
   width: 220px;
 }
 
@@ -236,4 +233,10 @@ button:hover {
     flex-direction: column;
     gap: 5px;
   }
+}
+select {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #bbb;
 }

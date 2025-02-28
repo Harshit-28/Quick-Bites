@@ -1,14 +1,23 @@
 import { useState } from "react";
 import "./App.css";
 import backgroundImage from "./image.jpg";
-
+import authService from "./services/authService";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    registerType: "user",
+  });
 
-  const openModal = () => {
+  const openModal = (register = false) => {
+    setIsRegister(register);
     setIsModalOpen(true);
   };
 
@@ -21,19 +30,59 @@ function App() {
     alert(`Searching for "${search}" in "${city}"`);
   };
 
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (isRegister) {
+        if (formData.password !== formData.confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+        await authService.register({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          role: formData.registerType,
+        });
+        alert("Registration successful! Please login.");
+      } else {
+        await authService.login({
+          email: formData.email,
+          password: formData.password,
+        });
+        alert("Login successful!");
+        closeModal();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "An error occurred");
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="App">
       <header>
-        <nav>
+        <nav className="navbar">
           <ul>
             <li>
-              <button>Home</button>
+              <button onClick={scrollToTop}>Home</button>
             </li>
             <li>
               <button>About</button>
             </li>
             <li>
-              <button onClick={openModal}>Login</button>
+              <button onClick={() => openModal(false)}>Login</button>
+            </li>
+            <li>
+              <button onClick={() => openModal(true)}>Register</button>
             </li>
           </ul>
         </nav>
@@ -86,16 +135,65 @@ function App() {
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <span onClick={closeModal} className="close-btn">
-              &times;
-            </span>
-            <h2>Login</h2>
-            <form>
+            <span onClick={closeModal} className="close-btn">&times;</span>
+            <h2>{isRegister ? "Register" : "Login"}</h2>
+            <form onSubmit={handleSubmit}>
+              {isRegister && (
+                <>
+                  <label htmlFor="username">Username:</label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </>
+              )}
               <label htmlFor="email">Email:</label>
-              <input type="email" id="email" name="email" required />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                required
+              />
               <label htmlFor="password">Password:</label>
-              <input type="password" id="password" name="password" required />
-              <button type="submit">Login</button>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleFormChange}
+                required
+              />
+              {isRegister && (
+                <>
+                  <label htmlFor="confirm-password">Confirm Password:</label>
+                  <input
+                    type="password"
+                    id="confirm-password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleFormChange}
+                    required
+                  />
+                  <label htmlFor="registerType">Register as:</label>
+                  <select
+                    id="registerType"
+                    name="registerType"
+                    value={formData.registerType}
+                    onChange={handleFormChange}
+                    required
+                  >
+                    <option value="user">User</option>
+                    <option value="restaurant">Restaurant</option>
+                  </select>
+                </>
+              )}
+              <button type="submit">{isRegister ? "Register" : "Login"}</button>
             </form>
           </div>
         </div>
