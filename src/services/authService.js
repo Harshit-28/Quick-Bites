@@ -15,4 +15,15 @@ const login = async (userData) => {
   return response.data;
 };
 
-export default { register, login };
+// Fetch user details by email
+const getUserByEmail = async (email) => {
+  const token = localStorage.getItem('token'); // Retrieve token
+  const response = await axios.get(`${API_URL}/user/email/${email}`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Attach token for authentication (if required)
+    },
+  });
+  return response.data;
+};
+
+export default { register, login, getUserByEmail };
