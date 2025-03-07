@@ -134,9 +134,6 @@ export default function UserLandingPage({ setEmail }) {  // Receive setEmail as 
         </div>
       </div>
 
-
-      
-
       {/* Modal */}
       {isModalOpen && (
         <div className="modal">
